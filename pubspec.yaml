@@ -12,6 +12,7 @@ dependencies:
   get: ^4.6.5
   chess_os:
     path: os
+  args: ^2.4.2
 
 dev_dependencies:
   flutter_test:
