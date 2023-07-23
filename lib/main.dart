@@ -1,5 +1,6 @@
 import 'package:chess/routes/r_route.dart';
 import 'package:chess/routes/route_imp.dart';
+import 'package:chess_os/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       getPages: routes.routes(),
       theme: ThemeData(
         fontFamily: 'inter',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: ChessColors.boardBlack),
         useMaterial3: false,
       ),
     );
