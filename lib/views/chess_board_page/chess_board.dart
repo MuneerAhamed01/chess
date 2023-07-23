@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'chess_board_controller.dart';
+import 'package:chess_os/widgets.dart';
 
 class ChessBoard extends GetWidget<ChessBoardController> {
   const ChessBoard({super.key});
@@ -8,9 +9,9 @@ class ChessBoard extends GetWidget<ChessBoardController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Chess'),
+    return const ScaffoldWithBackground(
+      child: Center(
+        child: Text('data'),
       ),
     );
   }
