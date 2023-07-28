@@ -14,7 +14,7 @@ class ChessBoard extends GetWidget<ChessBoardController> {
     return ScaffoldWithBackground(
       child: Center(
         child: SvgPicture.asset(
-          ChessPiece.pawn,
+          ChessPiece.pawnWhite,
         ),
       ),
     );
