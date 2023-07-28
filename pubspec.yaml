@@ -12,18 +12,21 @@ dependencies:
   get: ^4.6.5
   chess_os:
     path: os
-  args: ^2.4.2
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  args: ^2.4.2
+
 flutter:
   generate: true
   uses-material-design: true
 
   assets:
     - assets/fonts/
+    - assets/pieces/
 
   fonts:
     - family: inter

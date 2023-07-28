@@ -1,4 +1,6 @@
+import 'package:chess_os/utils/chess_pieces.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'chess_board_controller.dart';
 import 'package:chess_os/widgets.dart';
@@ -9,9 +11,11 @@ class ChessBoard extends GetWidget<ChessBoardController> {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldWithBackground(
+    return ScaffoldWithBackground(
       child: Center(
-        child: Text('data'),
+        child: SvgPicture.asset(
+          ChessPiece.pawn,
+        ),
       ),
     );
   }
