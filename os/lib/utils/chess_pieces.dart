@@ -1,5 +1,4 @@
-class ChessPiece {
-  /// [ChessPiece] Do not modify this file
+class ChessPieceAssets {
   static const pawnBlack = 'assets/pieces/pawn_black.svg';
   static const pawnWhite = 'assets/pieces/pawn_white.svg';
   static const bishopBlack = 'assets/pieces/bishop_black.svg';
