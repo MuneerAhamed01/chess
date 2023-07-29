@@ -4,7 +4,6 @@ import 'package:chess_os/nodes/chess_movement_node.dart';
 import 'package:chess_os/utils/chess_pieces.dart';
 import 'package:chess_os/utils/size.dart';
 import 'package:chess_os/widgets/chess_board_setup/chess_services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/colors.dart';
@@ -52,7 +51,7 @@ class ChessColumn extends StatefulWidget {
 
 class _ChessColumnState extends State<ChessColumn> {
   String? _piece;
-  late ChessMovementNode _node;
+  late ChessController _node;
   @override
   void initState() {
     super.initState();
@@ -60,7 +59,7 @@ class _ChessColumnState extends State<ChessColumn> {
   }
 
   _initBoard() {
-    _node = ChessMovementNode.instance;
+    _node = ChessController.instance;
     _node.addListener(_listenToTheMovement);
     _piece = ChessServices.instance.piecePosition()[widget.matrix];
     if (widget.matrix.column == 1) {
@@ -80,6 +79,13 @@ class _ChessColumnState extends State<ChessColumn> {
       _piece = null;
       setState(() {});
     }
+  }
+
+  @override
+  void dispose() {
+    _node.removeListener(_listenToTheMovement);
+    _node.dispose();
+    super.dispose();
   }
 
   @override

@@ -1,9 +1,9 @@
 import 'package:chess_os/model/chess_picker.dart';
 import 'package:flutter/foundation.dart';
 
-class ChessMovementNode extends ChangeNotifier {
-  ChessMovementNode._();
-  static final ChessMovementNode instance = ChessMovementNode._();
+class ChessController extends ChangeNotifier {
+  ChessController._();
+  static final ChessController instance = ChessController._();
 
   ChessPicker? _pickedPosition;
   ChessPicker? _droppedPosition;
@@ -16,8 +16,16 @@ class ChessMovementNode extends ChangeNotifier {
   }
 
   set dropValue(ChessPicker piece) {
+    if (piece.matrix == _pickedPosition?.matrix) {
+      _clear();
+      return;
+    }
     _droppedPosition = piece;
     notifyListeners();
+    _clear();
+  }
+
+  _clear() {
     _pickedPosition = null;
     _droppedPosition = null;
   }
