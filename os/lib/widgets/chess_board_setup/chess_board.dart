@@ -1,4 +1,5 @@
 import 'package:chess_os/model/chess_matrix.dart';
+import 'package:chess_os/utils/chess_pieces.dart';
 import 'package:chess_os/utils/size.dart';
 import 'package:chess_os/widgets/chess_board_setup/chess_services.dart';
 import 'package:flutter/foundation.dart';
@@ -57,6 +58,12 @@ class _ChessColumnState extends State<ChessColumn> {
 
   _initBoard() {
     _piece = ChessServices.instance.piecePosition()[widget.matrix];
+    if (widget.matrix.column == 1) {
+      _piece = ChessPieceAssets.pawnWhite;
+    }
+    if (widget.matrix.column == 6) {
+      _piece = ChessPieceAssets.pawnBlack;
+    }
   }
 
   @override
