@@ -11,7 +11,6 @@ class FullBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: sizeOfColumn(context) * 8,
       child: ListView.builder(
         shrinkWrap: true,
         itemBuilder: _horizontalColumn,
@@ -45,12 +44,14 @@ class ChessColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = sizeOfColumn(context);
+
     return GestureDetector(
       onTap: _onTapColumn,
       child: Container(
         alignment: AlignmentDirectional.center,
-        height: sizeOfColumn(context),
-        width: sizeOfColumn(context),
+        height: size,
+        width: size,
         color: _getBoardColor,
         child: SvgPicture.asset(ChessPiece.bishopBlack),
       ),
@@ -74,4 +75,5 @@ class Matrix {
   Matrix(this.row, this.column);
 
   int get rowSumColumn => row + column;
+  List<int> get matrix => [row, column];
 }
