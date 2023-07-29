@@ -1,4 +1,6 @@
 import 'package:chess_os/model/chess_matrix.dart';
+import 'package:chess_os/model/chess_picker.dart';
+import 'package:chess_os/nodes/chess_movement_node.dart';
 import 'package:chess_os/utils/chess_pieces.dart';
 import 'package:chess_os/utils/size.dart';
 import 'package:chess_os/widgets/chess_board_setup/chess_services.dart';
@@ -50,6 +52,7 @@ class ChessColumn extends StatefulWidget {
 
 class _ChessColumnState extends State<ChessColumn> {
   String? _piece;
+  late ChessMovementNode _node;
   @override
   void initState() {
     super.initState();
@@ -57,6 +60,8 @@ class _ChessColumnState extends State<ChessColumn> {
   }
 
   _initBoard() {
+    _node = ChessMovementNode.instance;
+    _node.addListener(_listenToTheMovement);
     _piece = ChessServices.instance.piecePosition()[widget.matrix];
     if (widget.matrix.column == 1) {
       _piece = ChessPieceAssets.pawnWhite;
@@ -66,11 +71,23 @@ class _ChessColumnState extends State<ChessColumn> {
     }
   }
 
+  _listenToTheMovement() {
+    if (_node.droppedValue?.matrix == widget.matrix) {
+      _piece = _node.pickedValue?.piece;
+      setState(() {});
+    }
+    if (_node.pickedValue?.matrix == widget.matrix) {
+      _piece = null;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = sizeOfColumn(context);
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: _onTapColumn,
       child: Container(
         alignment: AlignmentDirectional.center,
@@ -87,8 +104,13 @@ class _ChessColumnState extends State<ChessColumn> {
       : ChessColors.chessWhite;
 
   _onTapColumn() {
-    if (kDebugMode) {
-      print("Matrix : ${widget.matrix.column} ${widget.matrix.row}");
+    final ChessPicker picker = ChessPicker(_piece, widget.matrix);
+    if (_node.pickedValue == null) {
+      if (_piece == null) return;
+
+      _node.pickValue = picker;
+    } else {
+      _node.dropValue = picker;
     }
   }
 }
