@@ -1,28 +1,32 @@
-import 'package:chess_os/model/chess_picker.dart';
+import 'package:chess_os/nodes/chess_piece_node.dart';
 import 'package:flutter/foundation.dart';
 
 class ChessController extends ChangeNotifier {
   ChessController._();
   static final ChessController instance = ChessController._();
 
-  ChessPicker? _pickedPosition;
-  ChessPicker? _droppedPosition;
+  ChessPieceNode? _pickedPosition;
+  ChessPieceNode? _droppedPosition;
 
-  ChessPicker? get pickedValue => _pickedPosition;
-  ChessPicker? get droppedValue => _droppedPosition;
+  ChessPieceNode? get pickedValue => _pickedPosition;
+  ChessPieceNode? get droppedValue => _droppedPosition;
 
-  set pickValue(ChessPicker piece) {
+  set pickValue(ChessPieceNode piece) {
     _pickedPosition = piece;
   }
 
-  set dropValue(ChessPicker piece) {
+  set dropValue(ChessPieceNode piece) {
     if (piece.matrix == _pickedPosition?.matrix) {
       _clear();
       return;
     }
-    _droppedPosition = piece;
-    notifyListeners();
-    _clear();
+    bool isPossibleToMove =
+        _pickedPosition!.possibleMovements().contains(piece.matrix);
+    if (isPossibleToMove) {
+      _droppedPosition = piece;
+      notifyListeners();
+      _clear();
+    }
   }
 
   _clear() {

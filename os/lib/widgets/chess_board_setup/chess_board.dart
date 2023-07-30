@@ -1,9 +1,7 @@
 import 'package:chess_os/model/chess_matrix.dart';
-import 'package:chess_os/model/chess_picker.dart';
 import 'package:chess_os/nodes/chess_movement_node.dart';
-import 'package:chess_os/utils/chess_pieces.dart';
+import 'package:chess_os/nodes/chess_piece_node.dart';
 import 'package:chess_os/utils/size.dart';
-import 'package:chess_os/widgets/chess_board_setup/chess_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/colors.dart';
@@ -50,7 +48,7 @@ class ChessColumn extends StatefulWidget {
 }
 
 class _ChessColumnState extends State<ChessColumn> {
-  String? _piece;
+  late ChessPieceNode _piece;
   late ChessController _node;
   @override
   void initState() {
@@ -59,24 +57,27 @@ class _ChessColumnState extends State<ChessColumn> {
   }
 
   _initBoard() {
+    _piece = EmptyNode(widget.matrix);
     _node = ChessController.instance;
     _node.addListener(_listenToTheMovement);
-    _piece = ChessServices.instance.piecePosition()[widget.matrix];
+    // _piece = ChessServices.instance.piecePosition()[widget.matrix];
     if (widget.matrix.column == 1) {
-      _piece = ChessPieceAssets.pawnWhite;
+      _piece = PawnNode(true, widget.matrix);
     }
     if (widget.matrix.column == 6) {
-      _piece = ChessPieceAssets.pawnBlack;
+      _piece = PawnNode(false, widget.matrix);
     }
   }
 
   _listenToTheMovement() {
     if (_node.droppedValue?.matrix == widget.matrix) {
-      _piece = _node.pickedValue?.piece;
+      _piece = _node.pickedValue?.copyWith(widget.matrix) ??
+          EmptyNode(widget.matrix);
+
       setState(() {});
     }
     if (_node.pickedValue?.matrix == widget.matrix) {
-      _piece = null;
+      _piece = EmptyNode(widget.matrix);
       setState(() {});
     }
   }
@@ -100,7 +101,7 @@ class _ChessColumnState extends State<ChessColumn> {
         height: size,
         width: size,
         color: _getBoardColor,
-        child: _piece != null ? SvgPicture.asset(_piece!) : null,
+        child: _piece.piece != null ? SvgPicture.asset(_piece.piece!) : null,
       ),
     );
   }
@@ -110,13 +111,12 @@ class _ChessColumnState extends State<ChessColumn> {
       : ChessColors.chessWhite;
 
   _onTapColumn() {
-    final ChessPicker picker = ChessPicker(_piece, widget.matrix);
     if (_node.pickedValue == null) {
-      if (_piece == null) return;
+      if (_piece is EmptyNode) return;
 
-      _node.pickValue = picker;
+      _node.pickValue = _piece;
     } else {
-      _node.dropValue = picker;
+      _node.dropValue = _piece;
     }
   }
 }
