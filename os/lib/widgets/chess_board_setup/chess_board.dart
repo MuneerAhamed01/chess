@@ -5,6 +5,7 @@ import 'package:chess_os/utils/size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/colors.dart';
+import 'chess_services.dart';
 
 class FullBoard extends StatelessWidget {
   const FullBoard({super.key});
@@ -60,7 +61,8 @@ class _ChessColumnState extends State<ChessColumn> {
     _piece = EmptyNode(widget.matrix);
     _node = ChessController.instance;
     _node.addListener(_listenToTheMovement);
-    // _piece = ChessServices.instance.piecePosition()[widget.matrix];
+    _piece = ChessServices.instance.piecePosition()[widget.matrix] ??
+        EmptyNode(widget.matrix);
     if (widget.matrix.column == 1) {
       _piece = PawnNode(true, widget.matrix);
     }

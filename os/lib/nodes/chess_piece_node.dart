@@ -73,6 +73,61 @@ class PawnNode extends ChessPieceNode {
   }
 }
 
+class RookNode extends ChessPieceNode {
+  RookNode(super.isWhite, super.matrix) {
+    piece = isWhite ? ChessPieceAssets.rookWhite : ChessPieceAssets.rookBlack;
+  }
+
+  @override
+  ChessPieceNode copyWith(Matrix matrix) => RookNode(isWhite, matrix);
+
+  @override
+  bool isBlocker(Matrix position) {
+    return position is! EmptyNode;
+  }
+
+  @override
+  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
+    List<Matrix> moveMatrix = [];
+
+    ///   Movement is until any elements in the [_row] or the [_column]
+
+    final elementsInColumn =
+        currentFilled.where((element) => element.column == _column);
+
+    final elementsInRow = currentFilled.where((element) => element.row == _row);
+
+    if (isWhite) {
+      int current = _column - 1;
+
+      while (current >= 0) {
+        if (elementsInColumn.any((element) => element.column == current)) {
+          moveMatrix.add(Matrix(_row, current));
+
+          break;
+        }
+        moveMatrix.add(Matrix(_row, current));
+        current--;
+      }
+      int addCurrent = _column + 1;
+
+      while (addCurrent <= 7) {
+        if (elementsInColumn.any((element) => element.column == addCurrent)) {
+          moveMatrix.add(Matrix(_row, addCurrent));
+          break;
+        }
+        moveMatrix.add(Matrix(_row, addCurrent));
+        addCurrent++;
+      }
+
+      return moveMatrix;
+    }
+
+
+    return [];
+  }
+}
+
 class EmptyNode extends ChessPieceNode {
   EmptyNode(Matrix matrix) : super(false, matrix);
   @override
