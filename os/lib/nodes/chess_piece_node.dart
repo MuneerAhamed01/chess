@@ -92,16 +92,17 @@ class RookNode extends ChessPieceNode {
 
     ///   Movement is until any elements in the [_row] or the [_column]
 
-    final elementsInColumn =
-        currentFilled.where((element) => element.column == _column);
+    final elementsInRow = currentFilled.where((element) {
+      return element.row == _row;
+    }).toList();
 
-    final elementsInRow = currentFilled.where((element) => element.row == _row);
+    // final elementsInRow = currentFilled.where((element) => element.row == _row);
 
     if (isWhite) {
       int current = _column - 1;
 
       while (current >= 0) {
-        if (elementsInColumn.any((element) => element.column == current)) {
+        if (elementsInRow.any((element) => element.column == current)) {
           moveMatrix.add(Matrix(_row, current));
 
           break;
@@ -112,8 +113,8 @@ class RookNode extends ChessPieceNode {
       int addCurrent = _column + 1;
 
       while (addCurrent <= 7) {
-        if (elementsInColumn.any((element) => element.column == addCurrent)) {
-          moveMatrix.add(Matrix(_row, addCurrent));
+        if (elementsInRow.any((element) => element.column == addCurrent)) {
+         moveMatrix.add(Matrix(_row, addCurrent));
           break;
         }
         moveMatrix.add(Matrix(_row, addCurrent));
@@ -122,7 +123,6 @@ class RookNode extends ChessPieceNode {
 
       return moveMatrix;
     }
-
 
     return [];
   }

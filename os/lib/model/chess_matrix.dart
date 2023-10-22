@@ -11,4 +11,7 @@ class Matrix extends Equatable {
 
   @override
   List<Object?> get props => [row, column];
+
+  @override
+  toString() => '$row $column';
 }

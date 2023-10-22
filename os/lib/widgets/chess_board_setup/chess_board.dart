@@ -95,15 +95,19 @@ class _ChessColumnState extends State<ChessColumn> {
   Widget build(BuildContext context) {
     final size = sizeOfColumn(context);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: _onTapColumn,
-      child: Container(
-        alignment: AlignmentDirectional.center,
-        height: size,
-        width: size,
-        color: _getBoardColor,
-        child: _piece.piece != null ? SvgPicture.asset(_piece.piece!) : null,
+    return Tooltip(
+      message: widget.matrix.toString(),
+      triggerMode: TooltipTriggerMode.longPress,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _onTapColumn,
+        child: Container(
+          alignment: AlignmentDirectional.center,
+          height: size,
+          width: size,
+          color: _getBoardColor,
+          child: _piece.piece != null ? SvgPicture.asset(_piece.piece!) : null,
+        ),
       ),
     );
   }
