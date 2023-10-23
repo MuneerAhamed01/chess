@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chess_os/model/chess_matrix.dart';
 import 'package:chess_os/nodes/chess_movement_node.dart';
 import 'package:chess_os/nodes/chess_piece_node.dart';
@@ -51,6 +53,9 @@ class ChessColumn extends StatefulWidget {
 class _ChessColumnState extends State<ChessColumn> {
   late ChessPieceNode _piece;
   late ChessController _node;
+
+  bool _highlight = false;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +66,7 @@ class _ChessColumnState extends State<ChessColumn> {
     _piece = EmptyNode(widget.matrix);
     _node = ChessController.instance;
     _node.addListener(_listenToTheMovement);
+    _node.highlight.stream.listen(_listenHighlight);
     _piece = ChessServices.instance.piecePosition()[widget.matrix] ??
         EmptyNode(widget.matrix);
     if (widget.matrix.column == 1) {
@@ -84,6 +90,15 @@ class _ChessColumnState extends State<ChessColumn> {
     }
   }
 
+  _listenHighlight(List<Matrix> highlight) {
+    if (highlight.contains(widget.matrix)) {
+      _highlight = true;
+    } else {
+      _highlight = false;
+    }
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _node.removeListener(_listenToTheMovement);
@@ -101,12 +116,41 @@ class _ChessColumnState extends State<ChessColumn> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: _onTapColumn,
-        child: Container(
-          alignment: AlignmentDirectional.center,
-          height: size,
-          width: size,
-          color: _getBoardColor,
-          child: _piece.piece != null ? SvgPicture.asset(_piece.piece!) : null,
+        child: Stack(
+          children: [
+            Container(
+              alignment: AlignmentDirectional.center,
+              height: size,
+              width: size,
+              color: _getBoardColor,
+              child:
+                  _piece.piece != null ? SvgPicture.asset(_piece.piece!) : null,
+            ),
+            if (_highlight &&
+                (_piece.isWhite != _node.pickedValue?.isWhite ||
+                    _piece is EmptyNode))
+              Container(
+                height: size,
+                width: size,
+                color: _piece is! EmptyNode
+                    ? Colors.red[200]!.withOpacity(.3)
+                    : null,
+                child: Visibility(
+                  visible: _piece is EmptyNode,
+                  child: Center(
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationZ(pi / 4),
+                      child: Container(
+                        height: 10,
+                        width: 10,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+          ],
         ),
       ),
     );

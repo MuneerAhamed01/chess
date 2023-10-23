@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chess_os/model/chess_matrix.dart';
 import 'package:chess_os/nodes/chess_piece_node.dart';
 import 'package:flutter/foundation.dart';
@@ -22,9 +24,14 @@ class ChessController extends ChangeNotifier {
   ChessPieceNode? get pickedValue => _pickedPosition;
   ChessPieceNode? get droppedValue => _droppedPosition;
 
+  final StreamController<List<Matrix>> highlight =
+      StreamController<List<Matrix>>.broadcast();
+
   set pickValue(ChessPieceNode piece) {
     print("Picked Piece ${piece.matrix}");
     _pickedPosition = piece;
+    final possible = piece.possibleMovements(_filledPositions);
+    highlight.sink.add(possible);
   }
 
   set dropValue(ChessPieceNode piece) {
@@ -61,6 +68,7 @@ class ChessController extends ChangeNotifier {
   _clear() {
     _pickedPosition = null;
     _droppedPosition = null;
+    highlight.sink.add([]);
   }
 
   _updateTheFilledPosition({Matrix? toRemove, Matrix? toAdd}) {
@@ -70,5 +78,11 @@ class ChessController extends ChangeNotifier {
     if (toAdd != null && !_filledPositions.contains(toAdd)) {
       _filledPositions.add(toAdd);
     }
+  }
+
+  @override
+  void dispose() {
+    highlight.close();
+    super.dispose();
   }
 }
