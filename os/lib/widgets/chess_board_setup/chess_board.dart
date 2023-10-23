@@ -165,6 +165,9 @@ class _ChessColumnState extends State<ChessColumn> {
       if (_piece is EmptyNode) return;
 
       _node.pickValue = _piece;
+    } else if (_piece is! EmptyNode &&
+        _piece.matrix != _node.pickedValue?.matrix) {
+      _node.pickValue = _piece;
     } else {
       _node.dropValue = _piece;
     }
