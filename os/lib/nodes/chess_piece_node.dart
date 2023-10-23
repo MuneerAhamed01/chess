@@ -14,7 +14,17 @@ abstract class ChessPieceNode {
 
   ChessPieceNode copyWith(Matrix matrix);
 
-  List<Matrix> possibleMovements(List<Matrix> currentFilled);
+  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
+    if (isWhite) {
+      return _movementsForWhite(currentFilled);
+    } else {
+      return _movementsForBlack(currentFilled);
+    }
+  }
+
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled);
+
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled);
 
   bool isBlocker(Matrix position);
 }
@@ -28,39 +38,27 @@ class PawnNode extends ChessPieceNode {
   PawnNode copyWith(Matrix matrix) => PawnNode(isWhite, matrix);
 
   @override
-  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
+  bool isBlocker(Matrix position) {
+    return position is! EmptyNode;
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) {
     List<Matrix> matrixes = [];
     List<Matrix> crossCut = [];
-
-    if (isWhite) {
-      crossCut = currentFilled
-          .where((element) =>
-              element == Matrix(_row + 1, _column + 1) ||
-              element == Matrix(_row - 1, _column + 1))
-          .toList();
-      if (currentFilled
-          .any((element) => element == Matrix(matrix.row, matrix.column + 1))) {
-        return [...crossCut];
-      }
-      if (matrix.column == 1) {
-        matrixes.add(Matrix(matrix.row, matrix.column + 2));
-      }
-      matrixes.add(Matrix(matrix.row, matrix.column + 1));
-    } else {
-      crossCut = currentFilled
-          .where((element) =>
-              element == Matrix(_row + 1, _column - 1) ||
-              element == Matrix(_row - 1, _column - 1))
-          .toList();
-      if (matrix.column == 6) {
-        if (currentFilled.any(
-            (element) => element == Matrix(matrix.row, matrix.column - 1))) {
-          return [...crossCut];
-        }
-        matrixes.add(Matrix(matrix.row, matrix.column - 2));
-      }
-      matrixes.add(Matrix(matrix.row, matrix.column - 1));
+    crossCut = currentFilled
+        .where((element) =>
+            element == Matrix(_row + 1, _column + 1) ||
+            element == Matrix(_row - 1, _column + 1))
+        .toList();
+    if (currentFilled
+        .any((element) => element == Matrix(matrix.row, matrix.column + 1))) {
+      return [...crossCut];
     }
+    if (matrix.column == 1) {
+      matrixes.add(Matrix(matrix.row, matrix.column + 2));
+    }
+    matrixes.add(Matrix(matrix.row, matrix.column + 1));
 
     return matrixes
       ..removeWhere((element) => currentFilled.contains(element))
@@ -68,8 +66,25 @@ class PawnNode extends ChessPieceNode {
   }
 
   @override
-  bool isBlocker(Matrix position) {
-    return position is! EmptyNode;
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) {
+    List<Matrix> matrixes = [];
+    List<Matrix> crossCut = [];
+    crossCut = currentFilled
+        .where((element) =>
+            element == Matrix(_row + 1, _column - 1) ||
+            element == Matrix(_row - 1, _column - 1))
+        .toList();
+    if (matrix.column == 6) {
+      if (currentFilled
+          .any((element) => element == Matrix(matrix.row, matrix.column - 1))) {
+        return [...crossCut];
+      }
+      matrixes.add(Matrix(matrix.row, matrix.column - 2));
+    }
+    matrixes.add(Matrix(matrix.row, matrix.column - 1));
+    return matrixes
+      ..removeWhere((element) => currentFilled.contains(element))
+      ..addAll(crossCut);
   }
 }
 
@@ -86,46 +101,55 @@ class RookNode extends ChessPieceNode {
     return position is! EmptyNode;
   }
 
-  @override
-  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
-    List<Matrix> moveMatrix = [];
+  List<Matrix> _commonMovement(List<Matrix> currentFilled) {
+    final moveMatrix = <Matrix>[];
+    final elementsInRow =
+        currentFilled.where((element) => element.row == _row).toList();
+    final elementsInColumn =
+        currentFilled.where((element) => element.column == _column).toList();
 
-    ///   Movement is until any elements in the [_row] or the [_column]
-
-    final elementsInRow = currentFilled.where((element) {
-      return element.row == _row;
-    }).toList();
-
-    // final elementsInRow = currentFilled.where((element) => element.row == _row);
-
-    if (isWhite) {
-      int current = _column - 1;
-
-      while (current >= 0) {
-        if (elementsInRow.any((element) => element.column == current)) {
-          moveMatrix.add(Matrix(_row, current));
-
-          break;
-        }
-        moveMatrix.add(Matrix(_row, current));
-        current--;
+    for (int i = _column - 1; i >= 0; i--) {
+      if (elementsInRow.any((element) => element.column == i)) {
+        moveMatrix.add(Matrix(_row, i));
+        break;
       }
-      int addCurrent = _column + 1;
-
-      while (addCurrent <= 7) {
-        if (elementsInRow.any((element) => element.column == addCurrent)) {
-         moveMatrix.add(Matrix(_row, addCurrent));
-          break;
-        }
-        moveMatrix.add(Matrix(_row, addCurrent));
-        addCurrent++;
-      }
-
-      return moveMatrix;
+      moveMatrix.add(Matrix(_row, i));
     }
 
-    return [];
+    for (int i = _column + 1; i <= 7; i++) {
+      if (elementsInRow.any((element) => element.column == i)) {
+        moveMatrix.add(Matrix(_row, i));
+        break;
+      }
+      moveMatrix.add(Matrix(_row, i));
+    }
+
+    for (int i = _row - 1; i >= 0; i--) {
+      if (elementsInColumn.any((element) => element.row == i)) {
+        moveMatrix.add(Matrix(i, _column));
+        break;
+      }
+      moveMatrix.add(Matrix(i, _column));
+    }
+
+    for (int i = _row + 1; i <= 7; i++) {
+      if (elementsInColumn.any((element) => element.row == i)) {
+        moveMatrix.add(Matrix(i, _column));
+        break;
+      }
+      moveMatrix.add(Matrix(i, _column));
+    }
+
+    return moveMatrix;
   }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
 }
 
 class EmptyNode extends ChessPieceNode {
@@ -143,5 +167,15 @@ class EmptyNode extends ChessPieceNode {
   @override
   bool isBlocker(Matrix position) {
     return false;
+  }
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) {
+    throw UnimplementedError();
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) {
+    throw UnimplementedError();
   }
 }
