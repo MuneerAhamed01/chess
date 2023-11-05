@@ -166,7 +166,8 @@ class _ChessColumnState extends State<ChessColumn> {
 
       _node.pickValue = _piece;
     } else if (_piece is! EmptyNode &&
-        _piece.matrix != _node.pickedValue?.matrix) {
+        _piece.matrix != _node.pickedValue?.matrix &&
+        _piece.isWhite == _node.pickedValue?.isWhite) {
       _node.pickValue = _piece;
     } else {
       _node.dropValue = _piece;

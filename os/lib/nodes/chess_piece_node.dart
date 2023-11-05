@@ -2,6 +2,11 @@ import 'package:chess_os/utils/chess_pieces.dart';
 
 import '../model/chess_matrix.dart';
 
+/// [possibleMovements]
+/// -- The movements can move for the [ChessPieceNode] node
+/// -- need to calculate the blocked movement of the piece
+/// -- any special movement
+
 abstract class ChessPieceNode {
   String? piece;
   late Matrix matrix;
@@ -162,6 +167,51 @@ class EmptyNode extends ChessPieceNode {
   @override
   List<Matrix> possibleMovements(List<Matrix> currentFilled) {
     return [];
+  }
+
+  @override
+  bool isBlocker(Matrix position) {
+    return false;
+  }
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) {
+    throw UnimplementedError();
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) {
+    throw UnimplementedError();
+  }
+}
+
+class HorseNode extends ChessPieceNode {
+  HorseNode(super.isWhite, super.matrix) {
+    piece = isWhite ? ChessPieceAssets.horseWhite : ChessPieceAssets.horseBlack;
+  }
+  @override
+  HorseNode copyWith(Matrix matrix) {
+    return HorseNode(isWhite, matrix);
+  }
+
+  @override
+  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
+    // colum 2 row +1,-1
+    //colum 1 row +2,-2
+    // colum -1 row +2,-2
+    // colum -2 row +1,-1
+
+    List<Matrix> movement = [];
+    movement.add(Matrix(_row + 1, _column + 2));
+    movement.add(Matrix(_row - 1, _column + 2));
+    movement.add(Matrix(_row + 2, _column + 1));
+    movement.add(Matrix(_row - 2, _column + 1));
+    movement.add(Matrix(_row + 2, _column - 1));
+    movement.add(Matrix(_row - 2, _column - 1));
+    movement.add(Matrix(_row - 1, _column - 2));
+    movement.add(Matrix(_row + 1, _column - 2));
+
+    return movement;
   }
 
   @override
