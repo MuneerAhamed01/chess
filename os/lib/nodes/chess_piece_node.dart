@@ -196,11 +196,6 @@ class HorseNode extends ChessPieceNode {
 
   @override
   List<Matrix> possibleMovements(List<Matrix> currentFilled) {
-    // colum 2 row +1,-1
-    //colum 1 row +2,-2
-    // colum -1 row +2,-2
-    // colum -2 row +1,-1
-
     List<Matrix> movement = [];
     movement.add(Matrix(_row + 1, _column + 2));
     movement.add(Matrix(_row - 1, _column + 2));
@@ -211,6 +206,42 @@ class HorseNode extends ChessPieceNode {
     movement.add(Matrix(_row - 1, _column - 2));
     movement.add(Matrix(_row + 1, _column - 2));
 
+    return movement;
+  }
+
+  @override
+  bool isBlocker(Matrix position) {
+    return false;
+  }
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) {
+    throw UnimplementedError();
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) {
+    throw UnimplementedError();
+  }
+}
+
+class BishopNode extends ChessPieceNode {
+  BishopNode(super.isWhite, super.matrix) {
+    piece =
+        isWhite ? ChessPieceAssets.bishopWhite : ChessPieceAssets.bishopBlack;
+  }
+  @override
+  BishopNode copyWith(Matrix matrix) {
+    return BishopNode(isWhite, matrix);
+  }
+
+  @override
+  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
+    List<Matrix> movement = [];
+
+    for (int i = _row; i <= 8; i++) {
+      print(i);
+    }
     return movement;
   }
 
