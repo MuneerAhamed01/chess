@@ -226,37 +226,237 @@ class HorseNode extends ChessPieceNode {
 }
 
 class BishopNode extends ChessPieceNode {
-  BishopNode(super.isWhite, super.matrix) {
+  BishopNode(bool isWhite, Matrix matrix) : super(isWhite, matrix) {
     piece =
         isWhite ? ChessPieceAssets.bishopWhite : ChessPieceAssets.bishopBlack;
   }
-  @override
-  BishopNode copyWith(Matrix matrix) {
-    return BishopNode(isWhite, matrix);
-  }
 
   @override
-  List<Matrix> possibleMovements(List<Matrix> currentFilled) {
-    List<Matrix> movement = [];
-
-    for (int i = _row; i <= 8; i++) {
-      print(i);
-    }
-    return movement;
-  }
+  ChessPieceNode copyWith(Matrix matrix) => BishopNode(isWhite, matrix);
 
   @override
   bool isBlocker(Matrix position) {
-    return false;
+    return position is! EmptyNode;
+  }
+
+  List<Matrix> _commonMovement(List<Matrix> currentFilled) {
+    final moveMatrix = <Matrix>[];
+
+    // Diagonal movements
+    for (int i = 1; i <= 7; i++) {
+      if (_row - i >= 0 && _column - i >= 0) {
+        moveMatrix.add(Matrix(_row - i, _column - i));
+        if (currentFilled.any((element) =>
+            element.row == _row - i && element.column == _column - i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row - i >= 0 && _column + i <= 7) {
+        moveMatrix.add(Matrix(_row - i, _column + i));
+        if (currentFilled.any((element) =>
+            element.row == _row - i && element.column == _column + i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row + i <= 7 && _column - i >= 0) {
+        moveMatrix.add(Matrix(_row + i, _column - i));
+        if (currentFilled.any((element) =>
+            element.row == _row + i && element.column == _column - i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row + i <= 7 && _column + i <= 7) {
+        moveMatrix.add(Matrix(_row + i, _column + i));
+        if (currentFilled.any((element) =>
+            element.row == _row + i && element.column == _column + i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return moveMatrix;
   }
 
   @override
-  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) {
-    throw UnimplementedError();
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
+}
+
+class QueenNode extends ChessPieceNode {
+  QueenNode(bool isWhite, Matrix matrix) : super(isWhite, matrix) {
+    piece = isWhite ? ChessPieceAssets.queenWhite : ChessPieceAssets.queenBlack;
   }
 
   @override
-  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) {
-    throw UnimplementedError();
+  ChessPieceNode copyWith(Matrix matrix) => QueenNode(isWhite, matrix);
+
+  @override
+  bool isBlocker(Matrix position) {
+    return position is! EmptyNode;
   }
+
+  List<Matrix> _commonMovement(List<Matrix> currentFilled) {
+    final moveMatrix = <Matrix>[];
+
+    // Rook-like movements
+    for (int i = _column - 1; i >= 0; i--) {
+      if (currentFilled
+          .any((element) => element.row == _row && element.column == i)) {
+        moveMatrix.add(Matrix(_row, i));
+        break;
+      }
+      moveMatrix.add(Matrix(_row, i));
+    }
+
+    for (int i = _column + 1; i <= 7; i++) {
+      if (currentFilled
+          .any((element) => element.row == _row && element.column == i)) {
+        moveMatrix.add(Matrix(_row, i));
+        break;
+      }
+      moveMatrix.add(Matrix(_row, i));
+    }
+
+    for (int i = _row - 1; i >= 0; i--) {
+      if (currentFilled
+          .any((element) => element.row == i && element.column == _column)) {
+        moveMatrix.add(Matrix(i, _column));
+        break;
+      }
+      moveMatrix.add(Matrix(i, _column));
+    }
+
+    for (int i = _row + 1; i <= 7; i++) {
+      if (currentFilled
+          .any((element) => element.row == i && element.column == _column)) {
+        moveMatrix.add(Matrix(i, _column));
+        break;
+      }
+      moveMatrix.add(Matrix(i, _column));
+    }
+
+    // Bishop-like movements
+    for (int i = 1; i <= 7; i++) {
+      if (_row - i >= 0 && _column - i >= 0) {
+        moveMatrix.add(Matrix(_row - i, _column - i));
+        if (currentFilled.any((element) =>
+            element.row == _row - i && element.column == _column - i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row - i >= 0 && _column + i <= 7) {
+        moveMatrix.add(Matrix(_row - i, _column + i));
+        if (currentFilled.any((element) =>
+            element.row == _row - i && element.column == _column + i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row + i <= 7 && _column - i >= 0) {
+        moveMatrix.add(Matrix(_row + i, _column - i));
+        if (currentFilled.any((element) =>
+            element.row == _row + i && element.column == _column - i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    for (int i = 1; i <= 7; i++) {
+      if (_row + i <= 7 && _column + i <= 7) {
+        moveMatrix.add(Matrix(_row + i, _column + i));
+        if (currentFilled.any((element) =>
+            element.row == _row + i && element.column == _column + i)) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return moveMatrix;
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) =>
+      _commonMovement(currentFilled);
+}
+
+class KingNode extends ChessPieceNode {
+  KingNode(bool isWhite, Matrix matrix) : super(isWhite, matrix) {
+    piece = isWhite ? ChessPieceAssets.kingWhite : ChessPieceAssets.kingBlack;
+  }
+
+  @override
+  ChessPieceNode copyWith(Matrix matrix) => KingNode(isWhite, matrix);
+
+  @override
+  bool isBlocker(Matrix position) {
+    return position is! EmptyNode;
+  }
+
+  List<Matrix> _commonMovement() {
+    final moveMatrix = <Matrix>[];
+
+    // Movements in all directions
+    for (int i = -1; i <= 1; i++) {
+      for (int j = -1; j <= 1; j++) {
+        if (i == 0 && j == 0) {
+          continue; // Skip the current position
+        }
+
+        final newRow = _row + i;
+        final newColumn = _column + j;
+
+        if (newRow >= 0 && newRow <= 7 && newColumn >= 0 && newColumn <= 7) {
+          moveMatrix.add(Matrix(newRow, newColumn));
+        }
+      }
+    }
+
+    return moveMatrix;
+  }
+
+  @override
+  List<Matrix> _movementsForWhite(List<Matrix> currentFilled) =>
+      _commonMovement();
+
+  @override
+  List<Matrix> _movementsForBlack(List<Matrix> currentFilled) =>
+      _commonMovement();
 }
