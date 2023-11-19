@@ -13,6 +13,9 @@ dependencies:
   chess_os:
     path: os
   flutter_svg: ^2.0.7
+  firebase_core: ^2.22.0
+  firebase_auth: ^4.13.0
+  cloud_firestore: ^4.13.0
 
 dev_dependencies:
   flutter_test:
