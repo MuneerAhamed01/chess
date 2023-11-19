@@ -20,7 +20,7 @@ class ChessServices {
       const Matrix(1, 7): HorseNode(false, const Matrix(1, 7)),
       const Matrix(2, 7): BishopNode(false, const Matrix(2, 7)),
       const Matrix(3, 7): QueenNode(false, const Matrix(3, 7)),
-      const Matrix(4, 7): KingNode(false, const Matrix(3, 7)),
+      const Matrix(4, 7): KingNode(false, const Matrix(4, 7)),
       const Matrix(5, 7): BishopNode(false, const Matrix(5, 7)),
       const Matrix(6, 7): HorseNode(false, const Matrix(6, 7)),
       const Matrix(7, 7): RookNode(false, const Matrix(7, 7))

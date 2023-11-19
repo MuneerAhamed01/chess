@@ -129,36 +129,53 @@ class _ChessColumnState extends State<ChessColumn> {
             if (_highlight &&
                 (_piece.isWhite != _node.pickedValue?.isWhite ||
                     _piece is EmptyNode))
-              Container(
-                height: size,
-                width: size,
-                color: _piece is! EmptyNode
-                    ? Colors.red[200]!.withOpacity(.3)
-                    : null,
-                child: Visibility(
-                  visible: _piece is EmptyNode,
-                  child: Center(
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationZ(pi / 4),
-                      child: Container(
-                        height: 10,
-                        width: 10,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              _highlightPiece(size),
           ],
         ),
       ),
     );
   }
 
-  Color get _getBoardColor => widget.matrix.rowSumColumn.isOdd
-      ? ChessColors.boardBlack
-      : ChessColors.chessWhite;
+  Container _highlightPiece(size) {
+    return Container(
+      height: size,
+      width: size,
+      color: _piece is! EmptyNode ? Colors.red[200]!.withOpacity(.3) : null,
+      child: Visibility(
+        visible: _piece is EmptyNode,
+        child: Center(
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationZ(pi / 4),
+            child: Container(
+              height: 10,
+              width: 10,
+              color: Colors.blue,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color get _getBoardColor {
+    if (_isRecent) {
+      return Colors.yellow[300]!;
+    }
+    return widget.matrix.rowSumColumn.isOdd
+        ? ChessColors.boardBlack
+        : ChessColors.chessWhite;
+  }
+
+  bool get _isRecent {
+    print(_node.recentMove);
+    return _node.recentMove.any((element) {
+      if (element.isEqual(_piece.matrix)) {
+        print('element $element   _piece ${_piece.matrix}');
+      }
+      return element.isEqual(_piece.matrix);
+    });
+  }
 
   _onTapColumn() {
     if (_node.pickedValue == null) {

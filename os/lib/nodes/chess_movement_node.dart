@@ -5,6 +5,10 @@ import 'package:chess_os/nodes/chess_piece_node.dart';
 import 'package:flutter/foundation.dart';
 
 class ChessController extends ChangeNotifier {
+  bool isPlayingByWhite = true;
+
+  List<Matrix> recentMove = [];
+
   ChessController._() {
     _filledPositions = [
       for (int i = 0; i < 8; i++) ...[
@@ -28,6 +32,7 @@ class ChessController extends ChangeNotifier {
       StreamController<List<Matrix>>.broadcast();
 
   set pickValue(ChessPieceNode piece) {
+    if (piece.isWhite != isPlayingByWhite) return;
     print("Picked Piece ${piece.matrix}");
     _pickedPosition = piece;
     final possible = piece.possibleMovements(_filledPositions);
@@ -55,6 +60,8 @@ class ChessController extends ChangeNotifier {
   }
 
   _drop(ChessPieceNode piece) {
+    isPlayingByWhite = !isPlayingByWhite;
+    recentMove = [_pickedPosition!.matrix, piece.matrix];
     print("Dropped Piece ${piece.matrix}");
     _droppedPosition = piece;
     notifyListeners();

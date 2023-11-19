@@ -9,6 +9,8 @@ class Matrix extends Equatable {
 
   List<int> get matrix => [row, column];
 
+  bool isEqual(Matrix matrix) => row == matrix.row && column == matrix.column;
+
   @override
   List<Object?> get props => [row, column];
 
