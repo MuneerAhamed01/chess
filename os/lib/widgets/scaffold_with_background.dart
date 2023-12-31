@@ -12,6 +12,7 @@ class ScaffoldWithBackground extends StatelessWidget {
     return Scaffold(
       backgroundColor: ChessColors.gradientBlack,
       body: Stack(
+        alignment: Alignment.center,
         children: [
           Transform.translate(
             offset: const Offset(-110, 90),

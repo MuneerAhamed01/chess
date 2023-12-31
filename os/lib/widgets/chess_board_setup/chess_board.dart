@@ -14,11 +14,14 @@ class FullBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: _horizontalColumn,
-        itemCount: 8,
+    return Center(
+      child: SizedBox(
+        child: ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemBuilder: _horizontalColumn,
+          itemCount: 8,
+        ),
       ),
     );
   }
@@ -30,6 +33,7 @@ class FullBoard extends StatelessWidget {
       width: size,
       child: ListView.builder(
         shrinkWrap: true,
+        primary: false,
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, index) {
           return ChessColumn(
@@ -140,7 +144,12 @@ class _ChessColumnState extends State<ChessColumn> {
     return Container(
       height: size,
       width: size,
-      color: _piece is! EmptyNode ? Colors.red[200]!.withOpacity(.3) : null,
+      decoration: BoxDecoration(
+        // color: _piece is! EmptyNode ? Colors.red[200]!.withOpacity(.3) : null,
+        border: Border.all(
+          color: _piece is! EmptyNode ? Colors.red : Colors.transparent,
+        ),
+      ),
       child: Visibility(
         visible: _piece is EmptyNode,
         child: Center(
@@ -160,7 +169,7 @@ class _ChessColumnState extends State<ChessColumn> {
 
   Color get _getBoardColor {
     if (_isRecent) {
-      return Colors.yellow[300]!;
+      return Colors.blue.withOpacity(.5);
     }
     return widget.matrix.rowSumColumn.isOdd
         ? ChessColors.boardBlack
